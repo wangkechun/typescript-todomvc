@@ -3,11 +3,17 @@ const gutil = require('gulp-util');
 
 const webpack = require('webpack');
 const webpackConf = require('../conf/webpack.conf');
+const webpackLibsConf = require('../conf/webpack-libs.conf.js');
+
 const webpackDistConf = require('../conf/webpack-dist.conf');
 const gulpConf = require('../conf/gulp.conf');
 
 gulp.task('webpack:dev', done => {
   webpackWrapper(false, webpackConf, done);
+});
+
+gulp.task('webpack:libs', done => {
+  webpackWrapper(true, webpackLibsConf, done);
 });
 
 gulp.task('webpack:watch', done => {

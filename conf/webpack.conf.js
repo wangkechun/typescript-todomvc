@@ -1,9 +1,12 @@
 const webpack = require('webpack');
 const conf = require('./gulp.conf');
 const path = require('path');
+const fs = require('fs')
 
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const autoprefixer = require('autoprefixer');
+
+const COMMON_MODULES = eval(fs.readFileSync('./src/libs.js', 'utf8').replace(/require\('[^']*'\)/g, 'true'))
 
 module.exports = {
   module: {
@@ -36,7 +39,7 @@ module.exports = {
         exclude: /node_modules/,
         loaders: [
           'react-hot',
-          'ts'
+          'ts?transpileOnly=true'
         ]
       }
     ]
@@ -45,7 +48,8 @@ module.exports = {
     new webpack.optimize.OccurrenceOrderPlugin(),
     new webpack.NoErrorsPlugin(),
     new HtmlWebpackPlugin({
-      template: conf.path.src('index.html')
+      filename: 'index.html',
+      template: conf.path.src('index.dev.html')
     }),
     new webpack.HotModuleReplacementPlugin()
   ],
@@ -76,5 +80,15 @@ module.exports = {
   },
   tslint: {
     configuration: require('../tslint.json')
-  }
+  },
+  externals: [
+    function (context, request, callback) {
+      if (COMMON_MODULES.hasOwnProperty(request)) {
+        callback(null, `COMMON_MODULES.require("${request}")`)
+      } else {
+        // console.log(`module not in COMMON_MODULES: ${request} ${context}`)
+        callback()
+      }
+    }
+  ]
 };
