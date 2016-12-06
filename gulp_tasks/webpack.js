@@ -13,7 +13,7 @@ gulp.task('webpack:dev', done => {
 });
 
 gulp.task('webpack:libs', done => {
-  webpackWrapper(true, webpackLibsConf, done);
+  webpackWrapper(false, webpackLibsConf, done);
 });
 
 gulp.task('webpack:watch', done => {
